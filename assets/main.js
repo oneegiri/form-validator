@@ -1,4 +1,4 @@
-//import Validator from "./validator.class";
+//import Validator from "./controllers/Validator";
 //import dateModel from "./models/date.model";
 
 class Validator {
@@ -61,6 +61,7 @@ class Validator {
         //this.currencyValidator.defaultPrecision = 2;
         //Errors
         this.errors = {};
+        window.validator = {};
     }
 
     /**
@@ -353,6 +354,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let curType = null;
     let acceptedTypes = null;
     let timeout = null;
+    let debug = true;
     const fieldTypes = [
         "file",
         "text",
@@ -378,6 +380,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     acceptedTypes = e.target.getAttribute("accept");
                 } else {
                     acceptedTypes = e.target.getAttribute("data-accepted");
+                    if(!acceptedTypes){
+                        if(debug){
+                            e.target.setAttribute("style", "border:2px dashed red;");
+                        }
+                        console.error(`[Validator]-[Missing parameter] - No data-accepted attribute defined for the element: ${e.target.outerHTML}`);
+                        return;
+                    }
                 }
                 let error = VALIDATOR.validate(e.target.value, acceptedTypes);
 

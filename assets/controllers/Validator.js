@@ -13,13 +13,14 @@ import moment from "moment";
  * var x = Validator.validate(value, "array");
  */
 export default class Validator {
-    currencyValidator;
-    currentLocale;
-    currentCurrency;
-    errors;
-    emailRegex;
-    dateRegex;
-    telephoneNumberRegex;
+    currencyValidator = null;
+    currentLocale = null;
+    currentCurrency = null;
+    errors = null;
+    emailRegex = null;
+    dateRegex = null;
+    dateTimeRegex = null;
+    telephoneNumberRegex = null;
     types = [
         "string",
         "integer",
@@ -70,7 +71,8 @@ export default class Validator {
         //this.currencyValidator.defaultCurrency = this.currentCurrency;
         //this.currencyValidator.defaultPrecision = 2;
         //Errors
-        this.errors = [];
+        this.errors = {};
+        window.validator = {};
     }
 
     /**
@@ -81,6 +83,9 @@ export default class Validator {
      * @param {array} rules 
      */
     validate(value, rules) {
+        //Clean the errors object
+        this.errors = {};
+
         /*
          * Check if the value is not empty 
          * before trying to validate it.
@@ -98,9 +103,7 @@ export default class Validator {
      */
     isStringValid(value) {
         if ("string" !== typeof value || !value.match(this.stringRegex)) {
-            this.errors.push({
-                message: "You must provide a valid string."
-            });
+            this.errors.errMessage = "You must provide a valid string.";
         }
     }
     /**
@@ -156,9 +159,7 @@ export default class Validator {
      */
     isTelephoneNumberValid(value) {
         if (!value.match(this.telephoneNumberRegex)) {
-            this.errors.push({
-                message: "You must provide a valid telephone number."
-            });
+            this.errors.errMessage = "You must provide a valid telephone number.";
         }
     }
     /**
@@ -168,9 +169,7 @@ export default class Validator {
      */
     isEmailValid(value) {
         if (!value.match(this.emailRegex)) {
-            this.errors.push({
-                message: "You must provide a valid email."
-            });
+            this.errors.errMessage = "You must provide a valid email.";
         }
     }
     /**
@@ -180,9 +179,7 @@ export default class Validator {
      */
     isDateValid(value) {
         if (!moment(value, dateModel[this.currentLocale], true).isValid()) {
-            this.errors.push({
-                message: "You must provide a valid date."
-            });
+            this.errors.errMessage = "You must provide a valid date.";
         }
     }
     /**
@@ -195,9 +192,7 @@ export default class Validator {
      */
     isDateTimeValid(value) {
         if (!value.match(this.dateTimeRegex)) {
-            this.errors.push({
-                message: "You must provide a valid datetime."
-            });
+            this.errors.errMessage = "You must provide a valid datetime.";
         }
     }
     /**
@@ -207,10 +202,8 @@ export default class Validator {
      */
     isFloatValid(value) {
         value = value * 1; // => parse to float
-        if (Number.isInteger(value) || Number.isSafeInteger(value)) {
-            this.errors.push({
-                message: "You must provide floating point number."
-            });
+        if (Number.isInteger(value) || Number.isSafeInteger(value) || value === 0 || isNaN(value)) {
+            this.errors.errMessage = "You must provide floating point number.";
         }
     }
     /**
@@ -220,10 +213,8 @@ export default class Validator {
      */
     isIntegerValid(value) {
         value = value * 1; // => parse to integer
-        if (!Number.isInteger(value) || !Number.isSafeInteger(value)) {
-            this.errors.push({
-                message: "You must provide a number."
-            });
+        if (!Number.isInteger(value) || !Number.isSafeInteger(value) || value === 0 || isNaN(value)) {
+            this.errors.errMessage = "You must provide a number.";
         }
     }
     /**
@@ -234,9 +225,7 @@ export default class Validator {
     isObjectValid(value) {
         value = JSON.parse(value);
         if ("object" !== typeof value) {
-            this.errors.push({
-                message: "You must provide an object."
-            });
+            this.errors.errMessage = "You must provide an object.";
         }
     }
     /**
@@ -246,9 +235,7 @@ export default class Validator {
      */
     isArrayValid(value) {
         if ("array" !== typeof value || !isArray(value)) {
-            this.errors.push({
-                message: "You must provide an array."
-            });
+            this.errors.errMessage = "You must provide an array.";
         }
     }
     /**
@@ -258,9 +245,7 @@ export default class Validator {
      */
     isMimeTypeValid(value) {
         if (this.mimeTypes.indexOf(value) === -1) {
-            this.errors.push({
-                message: "You must provide a valid file."
-            });
+            this.errors.errMessage = "You must provide a valid file.";
         }
     }
     /**
@@ -270,9 +255,7 @@ export default class Validator {
      */
     isBoolean(value) {
         if ("boolean" !== typeof value) {
-            this.errors.push({
-                message: "You must provide an object."
-            });
+            this.errors.errMessage = "You must provide an object.";
         }
     }
 
@@ -284,7 +267,7 @@ export default class Validator {
     applyRules(value, rules) {
         switch (rules.length) {
             case 0:
-                console.error(`[Missing rules] - No rules defined for value: ${value}`);
+                console.error(`[Validator]-[Missing rules] - No rules defined for value: ${value}`);
                 break;
             case 1:
                 let cleanRule = rules[0].toLowerCase().trim();
