@@ -10,90 +10,46 @@
 </head>
 
 <body>
-    <div class="container" id="validator">
+    <div class="container" id="validator" style="margin-top: 100px;">
         <div class="row">
-            <h4>Integer check</h4>
             <div class="col-12">
                 <form>
-                    <div class="form-group">
-                        <label for="integer-check">Integer check</label>
+                    <div class="form-group mb-3">
+                        <label for="integer-check">Only integer accepted</label>
                         <input type="text" class="form-control" id="integer-check" data-accepted="integer" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                <hr>
-            </div>
-            <!--End block-->
-            <h4>Float check</h4>
-            <div class="col-12">
-                <form>
-                    <div class="form-group">
-                        <label for="float-check">float check</label>
+                    <div class="form-group mb-3">
+                        <label for="float-check">Only float accepted</label>
                         <input type="text" class="form-control" id="float-check" data-accepted="float">
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                <hr>
-            </div>
-            <!--End block-->
-            <h4>Text check</h4>
-            <div class="col-12">
-                <form>
-                    <div class="form-group">
-                        <label for="text-check">text check</label>
+                    <div class="form-group mb-3">
+                        <label for="text-check">Only text accepted</label>
                         <input type="text" class="form-control" id="text-check" data-accepted="string">
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                <hr>
-            </div>
-            <!--End block-->
-            <h4>Telephone check</h4>
-            <div class="col-12">
-                <form>
-                    <div class="form-group">
-                        <label for="text-check">tel check</label>
+                    <div class="form-group mb-3">
+                        <label for="text-check">Telephone number validation</label>
                         <input type="tel" class="form-control" id="tel-check" data-accepted="telephone">
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                <hr>
-            </div>
-            <!--End block-->
-            <h4>Email check</h4>
-            <div class="col-12">
-                <form>
-                    <div class="form-group">
-                        <label for="text-check">email check</label>
+                    <div class="form-group mb-3">
+                        <label for="text-check">Email validation (type=email should be used)</label>
                         <input type="text" class="form-control" id="email-check" data-accepted="email">
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                <hr>
-            </div>
-            <!--End block-->
-            <h4>Date check</h4>
-            <div class="col-12">
-                <form>
-                    <div class="form-group">
-                        <label for="text-check">date check</label>
+                    <div class="form-group mb-3">
+                        <label for="text-check">Date validation (type=date should be used)</label>
+                        <div>
+                            <small class=""><strong>It gets validated based on the current locale</strong></small>
+                        </div>
                         <input type="text" class="form-control" id="date-check" data-accepted="date">
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-                <hr>
-            </div>
-            <!--End block-->
-            <h4>Datetime check</h4>
-            <div class="col-12">
-                <form>
-                    <div class="form-group">
-                        <label for="text-check">datetime check</label>
+                    <div class="form-group mb-3">
+                        <label for="text-check">Datetime validation</label>
+                        <div>
+                            <small><strong>It gets validated by using the standard YYY-MM-DD HH:MM:SS pattern used into the DB</strong></small>
+                        </div>
                         <input type="text" class="form-control" id="datetime-check" data-accepted="datetime">
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary" id="submit" disabled>Submit</button>
                 </form>
-                <hr>
             </div>
             <!--End block-->
         </div>

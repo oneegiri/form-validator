@@ -60,7 +60,7 @@ class Validator {
         //this.currencyValidator.defaultCurrency = this.currentCurrency;
         //this.currencyValidator.defaultPrecision = 2;
         //Errors
-        this.errors = [];
+        this.errors = {};
     }
 
     /**
@@ -71,6 +71,9 @@ class Validator {
      * @param {array} rules 
      */
     validate(value, rules) {
+        //Clean the errors object
+        this.errors = {};
+
         /*
          * Check if the value is not empty 
          * before trying to validate it.
@@ -88,9 +91,7 @@ class Validator {
      */
     isStringValid(value) {
         if ("string" !== typeof value || !value.match(this.stringRegex)) {
-            this.errors.push({
-                message: "You must provide a valid string."
-            });
+            this.errors.errMessage = "You must provide a valid string.";
         }
     }
     /**
@@ -146,9 +147,7 @@ class Validator {
      */
     isTelephoneNumberValid(value) {
         if (!value.match(this.telephoneNumberRegex)) {
-            this.errors.push({
-                message: "You must provide a valid telephone number."
-            });
+            this.errors.errMessage = "You must provide a valid telephone number.";
         }
     }
     /**
@@ -158,9 +157,7 @@ class Validator {
      */
     isEmailValid(value) {
         if (!value.match(this.emailRegex)) {
-            this.errors.push({
-                message: "You must provide a valid email."
-            });
+            this.errors.errMessage = "You must provide a valid email.";
         }
     }
     /**
@@ -170,9 +167,7 @@ class Validator {
      */
     isDateValid(value) {
         if (!moment(value, dateModel[this.currentLocale], true).isValid()) {
-            this.errors.push({
-                message: "You must provide a valid date."
-            });
+            this.errors.errMessage = "You must provide a valid date.";
         }
     }
     /**
@@ -185,9 +180,7 @@ class Validator {
      */
     isDateTimeValid(value) {
         if (!value.match(this.dateTimeRegex)) {
-            this.errors.push({
-                message: "You must provide a valid datetime."
-            });
+            this.errors.errMessage = "You must provide a valid datetime.";
         }
     }
     /**
@@ -197,10 +190,8 @@ class Validator {
      */
     isFloatValid(value) {
         value = value * 1; // => parse to float
-        if (Number.isInteger(value) || Number.isSafeInteger(value)) {
-            this.errors.push({
-                message: "You must provide floating point number."
-            });
+        if (Number.isInteger(value) || Number.isSafeInteger(value) || value === 0 || isNaN(value)) {
+            this.errors.errMessage = "You must provide floating point number.";
         }
     }
     /**
@@ -210,10 +201,8 @@ class Validator {
      */
     isIntegerValid(value) {
         value = value * 1; // => parse to integer
-        if (!Number.isInteger(value) || !Number.isSafeInteger(value)) {
-            this.errors.push({
-                message: "You must provide a number."
-            });
+        if (!Number.isInteger(value) || !Number.isSafeInteger(value) || value === 0 || isNaN(value)) {
+            this.errors.errMessage = "You must provide a number.";
         }
     }
     /**
@@ -224,9 +213,7 @@ class Validator {
     isObjectValid(value) {
         value = JSON.parse(value);
         if ("object" !== typeof value) {
-            this.errors.push({
-                message: "You must provide an object."
-            });
+            this.errors.errMessage = "You must provide an object.";
         }
     }
     /**
@@ -236,9 +223,7 @@ class Validator {
      */
     isArrayValid(value) {
         if ("array" !== typeof value || !isArray(value)) {
-            this.errors.push({
-                message: "You must provide an array."
-            });
+            this.errors.errMessage = "You must provide an array.";
         }
     }
     /**
@@ -248,9 +233,7 @@ class Validator {
      */
     isMimeTypeValid(value) {
         if (this.mimeTypes.indexOf(value) === -1) {
-            this.errors.push({
-                message: "You must provide a valid file."
-            });
+            this.errors.errMessage = "You must provide a valid file.";
         }
     }
     /**
@@ -260,9 +243,7 @@ class Validator {
      */
     isBoolean(value) {
         if ("boolean" !== typeof value) {
-            this.errors.push({
-                message: "You must provide an object."
-            });
+            this.errors.errMessage = "You must provide an object.";
         }
     }
 
@@ -274,7 +255,7 @@ class Validator {
     applyRules(value, rules) {
         switch (rules.length) {
             case 0:
-                console.error(`[Missing rules] - No rules defined for value: ${value}`);
+                console.error(`[Validator]-[Missing rules] - No rules defined for value: ${value}`);
                 break;
             case 1:
                 let cleanRule = rules[0].toLowerCase().trim();
@@ -340,11 +321,38 @@ class Validator {
     }
 }
 
+function displayErrorAlert(target, errorMessage) {
+    let alert = target.parentNode.querySelector(".alert");
+    if (!alert) {
+        let message = document.createElement("div");
+        message.classList.add("alert");
+        message.classList.add("alert-danger");
+        message.setAttribute("role", "alert");
+        message.setAttribute("data-alert-type", "error");
+        message.textContent = errorMessage;
+        target.insertAdjacentElement("afterend", message);
+    }
+}
+
+function removeAlert(target) {
+    let alert = target.parentNode.querySelector(".alert");
+    if (alert) {
+        let alertType = alert.getAttribute("data-alert-type");
+        switch (alertType) {
+            case "error":
+                target.parentNode.querySelector(".alert-danger").remove();
+                break;
+        }
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const target = document.querySelector("#validator");
+    const submitButton = target.querySelector("#submit");
     const VALIDATOR = new Validator();
     let curType = null;
     let acceptedTypes = null;
+    let timeout = null;
     const fieldTypes = [
         "file",
         "text",
@@ -359,18 +367,75 @@ document.addEventListener("DOMContentLoaded", function () {
         "image",
     ];
     target.addEventListener("focusout", function (e) {
-        curType = e.target.type;
-        if (fieldTypes.indexOf(curType) > -1) {
-            if (curType === "file" || curType === "image") {
-                acceptedTypes = e.target.getAttribute("accept");
-            } else {
-                acceptedTypes = e.target.getAttribute("data-accepted");
-            }
-            let result = VALIDATOR.validate(e.target.value, acceptedTypes);
+        /**
+         * Perform this action only if the field is pristine
+         */
+        let hasLostFocus = e.target.getAttribute("data-focus-lost");
+        if (!hasLostFocus) {
+            curType = e.target.type;
+            if (fieldTypes.indexOf(curType) > -1) {
+                if (curType === "file" || curType === "image") {
+                    acceptedTypes = e.target.getAttribute("accept");
+                } else {
+                    acceptedTypes = e.target.getAttribute("data-accepted");
+                }
+                let error = VALIDATOR.validate(e.target.value, acceptedTypes);
 
-            console.log(result);
+                console.log(error);
+
+                if (error.errMessage) {
+                    displayErrorAlert(e.target, error.errMessage);
+                    window.validator.isFomValid = false;
+                    submitButton.setAttribute("disabled", "true");
+                } else {
+                    removeAlert(e.target);
+                    window.validator.isFomValid = true;
+                    submitButton.removeAttribute("disabled");
+                }
+
+                e.target.setAttribute("data-focus-lost", "true");
+            }
         }
     });
 
-    target.addEventListener("keyup", function (e) {});
+    target.addEventListener("keyup", function (e) {
+        /**
+         * Perform this action only if the form has already
+         * been edited.
+         */
+        let hasLostFocus = e.target.getAttribute("data-focus-lost");
+        if (hasLostFocus) {
+            // Clear the timeout if it has already been set.
+            // This will prevent the previous task from executing
+            // if it has been less than <MILLISECONDS>
+            clearTimeout(timeout);
+
+            // Make a new timeout set to go off in x milliseconds
+            timeout = setTimeout(function () {
+                curType = e.target.type;
+                if (fieldTypes.indexOf(curType) > -1) {
+                    if (curType === "file" || curType === "image") {
+                        acceptedTypes = e.target.getAttribute("accept");
+                    } else {
+                        acceptedTypes = e.target.getAttribute("data-accepted");
+                    }
+                    let error = VALIDATOR.validate(e.target.value, acceptedTypes);
+
+                    if (error.errMessage) {
+                        displayErrorAlert(e.target, error.errMessage);
+                        submitButton.setAttribute("disabled", "true");
+                    } else {
+                        removeAlert(e.target);
+                        submitButton.removeAttribute("disabled");
+                    }
+                }
+            }, 550);
+        }
+    });
+
+    submitButton.addEventListener("click", function(e){
+        if(!window.validator.isFormValid){
+            e.preventDefault();
+        }
+    });
 });
