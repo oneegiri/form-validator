@@ -2,14 +2,17 @@
   "name": "form_validator",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+	"scripts": {
+		"cy:open": "./node_modules/.bin/cypress open"
+	},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dinero.js": "^1.9.1",
     "moment": "^2.29.2"
+  },
+  "devDependencies": {
+    "cypress": "^9.5.4"
   }
 }
