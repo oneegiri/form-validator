@@ -1,4 +1,5 @@
 import Dinero from "dinero.js";
+import currency from "currency.js";
 import moment from "moment";
 import {dateModel} from "../models/date.model";
 /**
@@ -49,8 +50,9 @@ export default class Validator {
             ".xlsx",
             ".json",
         ];
+
         //Locales
-        //this.currentCurrency = document.documentElement.getAttribute("data-currency");
+        this.currentCurrency = document.documentElement.getAttribute("data-currency");
         this.currentLocale = document.documentElement.getAttribute("data-locale").replace("_", "-");
         this.translations = import(`../translations/${this.currentLocale}.json`);
         //Regexes
@@ -60,10 +62,10 @@ export default class Validator {
         this.telephoneNumberRegex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
         this.emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         //Currency
-        //this.currencyValidator = Dinero;
-        //this.currencyValidator.globalLocale = this.currentLocale.replace("_", "-");
-        //this.currencyValidator.defaultCurrency = this.currentCurrency;
-        //this.currencyValidator.defaultPrecision = 2;
+        this.currencyValidator = Dinero;
+        this.currencyValidator.globalLocale = this.currentLocale;
+        this.currencyValidator.defaultCurrency = this.currentCurrency;
+        this.currencyValidator.defaultPrecision = 2;
         //Errors
         this.errors = {};
     }
@@ -106,15 +108,28 @@ export default class Validator {
      * @param {*} value 
      */
     isCurrencyValid(value) {
-        /*let formattedCurrency = this.currencyValidator({
-            amount: value
-        });
+        if(value){
+            let cleanValue = value.replace(/[,.]/g, "") * 1;
+            /**
+             * Bail early in case the
+             * value is not a proper integer
+             */
+            if(!Number.isInteger(cleanValue)){
+                this.errors.errMessage = "You must provide a valid amount.";
+                return;
+            }
+            let formattedCurrency = this.currencyValidator({
+                amount: cleanValue
+            }).toFormat();
 
-        if (formattedCurrency !== value) {
-            this.errors.push({
-                message: "You must provide a valid amount."
-            });
-        }*/
+            console.log(formattedCurrency);
+
+            if (formattedCurrency !== value) {
+                this.errors.errMessage = "You must provide a valid amount. The correct currency format for your locale is: " + formattedCurrency;
+            }
+        } else {
+            this.errors.errMessage = "You must provide a valid amount.";
+        }
     }
     /**
      * Checks if the provided value is

@@ -1,0 +1,15 @@
+{
+    "telephoneNumberErrorMessage": "",
+    "stringErrorMessage": "",
+    "floatErrorMessage": "",
+    "dateErrorMessage": "",
+    "dateTimeErrorMessage": "",
+    "textFieldErrorMessage": "",
+    "integerErrorMessage": "",
+    "currencyErrorMessage": "",
+    "emailErrorMessage": "",
+    "mimeTypeErrorMessage": "",
+    "booleanErrorMessage": "",
+    "objectErrorMessage": "",
+    "arrayErrorMessage": ""
+}
