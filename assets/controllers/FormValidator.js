@@ -27,6 +27,7 @@ export default class FormValidator {
             "hidden",
             "image",
         ];
+        //Initialize the FormValidator object if does not exists.
         if(!window.FormValidator){
             window.FormValidator = {};
         }
@@ -61,14 +62,16 @@ export default class FormValidator {
 
         this.target.addEventListener("keyup", (e) => {
             /**
-             * Perform this action only if the form has already
+             * Perform this action only if the field has already
              * been edited.
              */
             this.hasLostFocus = e.target.getAttribute("data-focus-lost");
             if (this.hasLostFocus) {
-                // Clear the timeout if it has already been set.
-                // This will prevent the previous task from executing
-                // if it has been less than <MILLISECONDS>
+                /** 
+                * Clear the timeout if it has already been set.
+                * This will prevent the previous task from executing
+                * if it has been less than <MILLISECONDS>
+                */
                 clearTimeout(this.timeout);
 
                 // Make a new timeout set to go off in x milliseconds
@@ -81,6 +84,11 @@ export default class FormValidator {
             }
         });
 
+        /**
+         * Prevent the form to be submitted
+         * in case the user removes the disabled attribute
+         * via the inspector.
+         */
         this.submitButton.addEventListener("click", (e) => {
             if (window.FormValidator[this.targetId].errors > 0) {
                 e.preventDefault();
@@ -150,15 +158,7 @@ export default class FormValidator {
                  * on the field, trigger an error.
                  */
                 if (!this.acceptedTypes) {
-                    /**
-                     * If the debug mode is activated, mark the affected
-                     * fields in order to recognize them.
-                     */
-                    if (this.debug) {
-                        target.setAttribute("style", "border:2px dashed red;");
-                    }
-
-                    console.error(`[Validator]-[Missing parameter] - No data-accepted attribute defined for the element: ${target.outerHTML}`);
+                    console.error(`[Validator]-[Missing parameter]: No data-accepted attribute defined for the element: ${target.outerHTML}`);
                     return;
                 }
             }

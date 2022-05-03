@@ -9,9 +9,8 @@ import {dateModel} from "../models/date.model";
  * 
  * For example:
  * <input type="text" data-accepted="string">
- * <input type="text" data-accepted="string,float,integer">
  * Or:
- * var x = Validator.validate(value, "array");
+ * var x = Validator.validate(value, array);
  */
 export default class Validator {
 
@@ -231,7 +230,7 @@ export default class Validator {
     applyRules(value, rules) {
         switch (rules.length) {
             case 0:
-                console.error(`[Validator]-[Missing rules] - No rules defined for value: ${value}`);
+                console.error(`[Validator]-[Missing rules]: No rules defined for value: ${value}`);
                 break;
             case 1:
                 let cleanRule = rules[0].toLowerCase().trim();
