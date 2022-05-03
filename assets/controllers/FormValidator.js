@@ -1,38 +1,31 @@
 import Validator from "./Validator";
 
 export default class FormValidator {
-    VALIDATOR = null;
-    target = null;
-    submitButton = null;
-    curType = null;
-    acceptedTypes = null;
-    timeout = null;
-    hasLostFocus = null;
-    debug = false;
-    fieldTypes = [
-        "file",
-        "text",
-        "number",
-        "email",
-        "password",
-        "date",
-        "checkbox",
-        "tel",
-        "time",
-        "hidden",
-        "image",
-    ];
 
     constructor(
         formID = "validator",
-        submitID = "submit",
-        enableDebug = false
+        submitID = "submit"
     ) {
         this.VALIDATOR = new Validator();
-        this.debug = enableDebug;
-        this.target = document.querySelector("#" + formID);
-        this.submitButton = target.querySelector("#" + submitID);
-        this.init();
+        this.target = document.body.querySelector("#" + formID);
+        this.submitButton = this.target.querySelector("#" + submitID);
+        this.curType = null;
+        this.acceptedTypes = null;
+        this.timeout = null;
+        this.hasLostFocus = null;
+        this.fieldTypes = [
+            "file",
+            "text",
+            "number",
+            "email",
+            "password",
+            "date",
+            "checkbox",
+            "tel",
+            "time",
+            "hidden",
+            "image",
+        ];
     }
 
     /**
@@ -40,7 +33,7 @@ export default class FormValidator {
      * current form.
      */
     init() {
-        this.target.addEventListener("focusout", function (e) { // focusout bubbles up whilist blur doesn't
+        this.target.addEventListener("focusout", (e) => { // focusout bubbles up whilist blur doesn't
             /**
              * Perform this action only if the field is pristine
              */
@@ -54,7 +47,7 @@ export default class FormValidator {
             }
         });
 
-        this.target.addEventListener("keyup", function (e) {
+        this.target.addEventListener("keyup", (e) => {
             /**
              * Perform this action only if the form has already
              * been edited.
@@ -67,7 +60,7 @@ export default class FormValidator {
                 clearTimeout(this.timeout);
 
                 // Make a new timeout set to go off in x milliseconds
-                this.timeout = setTimeout(function () {
+                this.timeout = setTimeout(() => {
                     this.curType = e.target.type;
                     if (this.fieldTypes.indexOf(this.curType) > -1) {
                         this.validateForm(e.target, this.curType);
@@ -76,7 +69,7 @@ export default class FormValidator {
             }
         });
 
-        this.submitButton.addEventListener("click", function (e) {
+        this.submitButton.addEventListener("click", (e) => {
             if (!window.validator.isFormValid) {
                 e.preventDefault();
             }

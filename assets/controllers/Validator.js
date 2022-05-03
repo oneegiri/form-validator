@@ -13,50 +13,42 @@ import moment from "moment";
  * var x = Validator.validate(value, "array");
  */
 export default class Validator {
-    currencyValidator = null;
-    currentLocale = null;
-    currentCurrency = null;
-    errors = null;
-    emailRegex = null;
-    dateRegex = null;
-    dateTimeRegex = null;
-    telephoneNumberRegex = null;
-    types = [
-        "string",
-        "integer",
-        "float",
-        "boolean",
-        "date",
-        "datetime",
-        "currency",
-        "object",
-        "mimetype",
-        "telephone",
-        "email",
-        "currency",
-        "array",
-    ];
-    mimeTypes = [
-        '.csv',
-        ".xml",
-        ".doc",
-        ".docx",
-        ".pdf",
-        ".png",
-        ".jpg",
-        ".jpeg",
-        ".json",
-        ".avi",
-        ".ppt",
-        ".pptx",
-        ".rtf",
-        ".txt",
-        ".xls",
-        ".xlsx",
-        ".json",
-    ];
 
     constructor() {
+        this.types = [
+            "string",
+            "integer",
+            "float",
+            "boolean",
+            "date",
+            "datetime",
+            "currency",
+            "object",
+            "mimetype",
+            "telephone",
+            "email",
+            "currency",
+            "array",
+        ];
+        this.mimeTypes = [
+            '.csv',
+            ".xml",
+            ".doc",
+            ".docx",
+            ".pdf",
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".json",
+            ".avi",
+            ".ppt",
+            ".pptx",
+            ".rtf",
+            ".txt",
+            ".xls",
+            ".xlsx",
+            ".json",
+        ];
         //Locales
         //this.currentCurrency = document.documentElement.getAttribute("data-currency");
         this.currentLocale = document.documentElement.getAttribute("data-locale");

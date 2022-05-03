@@ -1,18 +1,36 @@
 {
-  "name": "form_validator",
-  "version": "1.0.0",
-  "description": "",
+	"name": "form_validator",
+	"version": "1.0.0",
+	"description": "",
 	"scripts": {
-		"cy:open": "./node_modules/.bin/cypress open"
+		"cy:open": "./node_modules/.bin/cypress open",
+		"watch": "webpack --watch",
+		"build": "webpack build --mode=production"
 	},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "dinero.js": "^1.9.1",
-    "moment": "^2.29.2"
-  },
-  "devDependencies": {
-    "cypress": "^9.5.4"
-  }
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"dinero.js": "^1.9.1",
+		"moment": "^2.29.2"
+	},
+	"devDependencies": {
+		"cypress": "^9.5.4",
+		"@babel/core": "^7.17.5",
+		"@babel/eslint-parser": "^7.16.5",
+		"@babel/preset-env": "^7.16.11",
+		"eslint": "^8.6.0",
+		"eslint-plugin-html": "^6.2.0",
+		"babel-loader": "^8.2.3",
+		"webpack": "^5.69.1",
+		"webpack-cli": "^4.9.2"
+	},
+	"babel": {
+		"presets": [
+			[
+				"@babel/preset-env"
+			]
+		]
+	},
+	"browserslist": "> 0.5%, last 2 versions, not dead"
 }
