@@ -1,5 +1,4 @@
 import FormValidator from "./controllers/FormValidator";
-//import dateModel from "./models/date.model";
 
 function displayErrorAlert(target, errorMessage) {
     let alert = target.parentNode.querySelector(".alert");

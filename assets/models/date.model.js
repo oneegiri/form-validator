@@ -1,4 +1,4 @@
-export default dateModel = {
+export const dateModel = {
     "af-ZA": "yyyy/MM/dd",
     "am-ET": "d/M/yyyy",
     "ar-AE": "dd/MM/yyyy",
