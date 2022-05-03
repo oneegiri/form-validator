@@ -52,6 +52,7 @@ export default class Validator {
         //Locales
         //this.currentCurrency = document.documentElement.getAttribute("data-currency");
         this.currentLocale = document.documentElement.getAttribute("data-locale").replace("_", "-");
+        this.translations = import(`../translations/${this.currentLocale}.json`);
         //Regexes
         this.stringRegex = /^([a-zA-Z0-9\u0600-\u06FF\u0660-\u0669\u06F0-\u06F9 _.-]+)$/;
         this.textFieldRegex = /^([a-zA-Z0-9\u0600-\u06FF\u0660-\u0669\u06F0-\u06F9 _.-?^;:,!"'£$€%&/()=*#@<>°ìùèéòàç]+)$/;
