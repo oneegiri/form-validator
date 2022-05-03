@@ -66,7 +66,6 @@ export default class Validator {
         //this.currencyValidator.defaultPrecision = 2;
         //Errors
         this.errors = {};
-        window.validator = {};
     }
 
     /**

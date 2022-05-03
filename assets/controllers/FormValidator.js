@@ -8,6 +8,7 @@ export default class FormValidator {
     ) {
         this.VALIDATOR = new Validator();
         this.target = document.body.querySelector("#" + formID);
+        this.targetId = formID;
         this.submitButton = this.target.querySelector("#" + submitID);
         this.curType = null;
         this.acceptedTypes = null;
@@ -26,6 +27,9 @@ export default class FormValidator {
             "hidden",
             "image",
         ];
+        if(!window.FormValidator){
+            window.FormValidator = {};
+        }
     }
 
     /**
@@ -33,6 +37,14 @@ export default class FormValidator {
      * current form.
      */
     init() {
+        /**
+         * Create an istance for each form 
+         * inside the window object
+         * to keep track of errors.
+         */
+        window.FormValidator[this.targetId] = {
+            errors: 0
+        };
         this.target.addEventListener("focusout", (e) => { // focusout bubbles up whilist blur doesn't
             /**
              * Perform this action only if the field is pristine
@@ -70,7 +82,7 @@ export default class FormValidator {
         });
 
         this.submitButton.addEventListener("click", (e) => {
-            if (!window.validator.isFormValid) {
+            if (window.FormValidator[this.targetId].errors > 0) {
                 e.preventDefault();
             }
         });
@@ -155,10 +167,14 @@ export default class FormValidator {
             
             if (error.errMessage) {
                 this.displayErrorAlert(target, error.errMessage);
+                window.FormValidator[this.targetId].errors += 1;
                 this.submitButton.setAttribute("disabled", "true");
             } else {
                 this.removeAlert(target);
-                this.submitButton.removeAttribute("disabled");
+                window.FormValidator[this.targetId].errors -= 1;
+                if(window.FormValidator[this.targetId].errors === 0){
+                    this.submitButton.removeAttribute("disabled");
+                }
             }
         }
     }
